@@ -1,6 +1,7 @@
 import * as React from 'react'
 import BulkSelectorBlockChecker from '../../helpers/bulk_selector_block_checker'
 import allSelectors from '../../data/many_unique_selectors'
+import Layout from '../layout/layout'
 import Toggle from '../toggle/toggle'
 import * as styles from './selectors_demo.css'
 
@@ -24,26 +25,27 @@ export default React.memo(function SelectorsDemo() {
   })
 
   return (
-    <div className={styles.body}>
-      <div className={styles.header}>
-        <div className={styles.control} onClick={() => setShowAll((doShowAll) => !doShowAll)}>
-          <Toggle checked={doShowAll} />
-          <div className={styles.controlLabel}>Show not blocked</div>
-        </div>
-        <progress
-          max={100}
-          value={progress * 100}
-          className={`${styles.progress} ${progress >= 1 ? styles.complete : ''}`}
-        />
-      </div>
-      <div className={styles.content}>
-        {progress >= 1 && selectorsView.length === 0 ? (
-          <div className={styles.noSelectors}>Your browser blocks no known selectors</div>
-        ) : (
-          <ul className={styles.selectors}>{selectorsView}</ul>
-        )}
-      </div>
-    </div>
+    <Layout
+      header={
+        <>
+          <div className={styles.control} onClick={() => setShowAll(!doShowAll)}>
+            <Toggle checked={doShowAll} />
+            <div className={styles.controlLabel}>Show not blocked</div>
+          </div>
+          <progress
+            max={100}
+            value={progress * 100}
+            className={`${styles.progress} ${progress >= 1 ? styles.complete : ''}`}
+          />
+        </>
+      }
+    >
+      {progress >= 1 && selectorsView.length === 0 ? (
+        <div className={styles.noSelectors}>Your browser blocks no known selectors</div>
+      ) : (
+        <ul className={styles.selectors}>{selectorsView}</ul>
+      )}
+    </Layout>
   )
 })
 

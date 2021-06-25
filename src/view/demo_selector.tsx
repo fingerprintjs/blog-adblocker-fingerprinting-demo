@@ -33,7 +33,11 @@ export default function DemoSelector(): React.ReactElement {
         </React.Suspense>
       )
     case Demo.Filters:
-      return <FiltersDemo />
+      return (
+        <React.Suspense fallback={<LoadingScreen fullAbsolute />}>
+          <FiltersDemo />
+        </React.Suspense>
+      )
   }
 
   return (

@@ -7,7 +7,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const autoprefixer = require('autoprefixer')
 
 module.exports = (env, { mode = 'development' }) => ({
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   mode,
   resolve: {
     extensions: ['.ts', '.tsx', '.js', '.jsx'],

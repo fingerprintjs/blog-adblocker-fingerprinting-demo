@@ -1,0 +1,26 @@
+.body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 12px 12px 0;
+}
+
+.header {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header > :not(:first-child) {
+  margin-left: 16px;
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  mask-image: linear-gradient(to bottom, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
+  margin-top: 8px;
+  padding: 16px 0;
+}
