@@ -1,0 +1,69 @@
+.body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 12px 12px 0;
+}
+
+.header {
+  flex: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header > :not(:first-child) {
+  margin-left: 16px;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.controlLabel {
+  flex: 1;
+  margin-left: 8px;
+}
+
+.progress {
+  width: 200px;
+  max-width: 20%;
+  transition: opacity 0.3s ease-in;
+}
+.progress.complete {
+  opacity: 0;
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  mask-image: linear-gradient(to bottom, transparent 0, black 20px, black calc(100% - 20px), transparent 100%);
+  margin-top: 8px;
+  padding: 16px 0;
+}
+
+.selectors {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.5;
+
+  /* See https://codepen.io/TheFinesse/pen/Ozyaze?editors=1100 */
+  display: grid;
+  grid-gap: 0 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr));
+}
+.selectors > li {
+  white-space: nowrap;
+  overflow: hidden;
+}
+.selectors > li:not(.blocked) {
+  color: #8e8e93;
+}
+
+.noSelectors {
+  font-size: 18px;
+}

@@ -1,0 +1,27 @@
+.toggle {
+  transition: 0.15s ease-out;
+  border-radius: 10px;
+  width: 36px;
+  height: 20px;
+  flex: none;
+  position: relative;
+  background: #f2f2f7;
+  cursor: pointer;
+}
+.indicator {
+  width: 18px;
+  height: 18px;
+  transition: 0.15s ease-out;
+  background: #fff;
+  border-radius: 100%;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  box-shadow: 0 5px 14px 0 rgba(13, 16, 43, 0.1);
+}
+.checked {
+  background: #f04405;
+}
+.checked > .indicator {
+  transform: translateX(16px);
+}
