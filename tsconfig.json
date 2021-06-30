@@ -7,6 +7,7 @@
     "sourceMap": true,
     "removeComments": false,
     "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "noErrorTruncation": true,
     "strict": true,

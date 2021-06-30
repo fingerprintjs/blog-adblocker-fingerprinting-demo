@@ -25,30 +25,13 @@ module.exports = (env, { mode = 'development' }) => ({
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
-        use: [
+        oneOf: [
           {
-            loader: MiniCssExtractPlugin.loader,
-            options: { modules: { namedExport: true } },
+            test: /node_modules/,
+            use: makeCSSLoaders(false),
           },
           {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 1,
-              modules: {
-                localIdentName: '[name]__[local]__[hash:base64:5]',
-                namedExport: true,
-                exportLocalsConvention: 'dashesOnly',
-              },
-            },
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                plugins: [autoprefixer()],
-              },
-            },
+            use: makeCSSLoaders(true),
           },
         ],
       },
@@ -86,3 +69,33 @@ module.exports = (env, { mode = 'development' }) => ({
     }),
   ],
 })
+
+function makeCSSLoaders(isModule) {
+  return [
+    {
+      loader: MiniCssExtractPlugin.loader,
+      options: { modules: { namedExport: true } },
+    },
+    {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 1,
+        modules: isModule
+          ? {
+              localIdentName: '[name]__[local]__[hash:base64:5]',
+              namedExport: true,
+              exportLocalsConvention: 'dashesOnly',
+            }
+          : false,
+      },
+    },
+    {
+      loader: 'postcss-loader',
+      options: {
+        postcssOptions: {
+          plugins: [autoprefixer()],
+        },
+      },
+    },
+  ]
+}

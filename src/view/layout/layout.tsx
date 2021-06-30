@@ -10,7 +10,7 @@ export default function Layout({ header, children }: Props): React.ReactElement 
   return (
     <div className={styles.body}>
       <div className={styles.header}>{header}</div>
-      <div className={styles.content}>{children}</div>
+      {children}
     </div>
   )
 }

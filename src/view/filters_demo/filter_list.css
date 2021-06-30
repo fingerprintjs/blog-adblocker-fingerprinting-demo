@@ -1,0 +1,58 @@
+.list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  /*
+   * Makes the block take the height from the parent (not from the children).
+   * The grid can break on resize without this property.
+   */
+  min-height: 0;
+}
+.list > * {
+  flex: 1;
+}
+
+.slide {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  display: grid;
+  grid-gap: 0 16px;
+  text-align: left;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  min-width: 0; /* Enforces the hidden overflow */
+}
+.item:hover {
+  opacity: 0.72;
+}
+.item > * {
+  flex: none;
+}
+.itemStatus {
+  margin-right: 4px;
+  line-height: 1;
+}
+.itemName {
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+.itemIcon {
+  margin: 0 3px 0 8px;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border-style: solid;
+  border-width: 0 1px 1px 0;
+  border-color: #8e8e93;
+  transform: translate(-2px, 0) rotate(-45deg);
+}

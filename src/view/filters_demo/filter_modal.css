@@ -1,0 +1,141 @@
+.root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(0.9);
+  transition: 0.25s ease-out, visibility 0.25s step-end;
+}
+.root.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: none;
+  transition: 0.25s ease-out, visibility 0.25s step-start;
+}
+
+.underlay {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card {
+  z-index: 1;
+  background: #fff;
+  border-radius: 10px;
+  max-width: 90%;
+  max-height: 90%;
+  box-sizing: border-box;
+  padding: 1.5em 2em;
+  box-shadow: 0 9px 24px 0 rgba(72, 76, 108, 0.15);
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 0.7em;
+  right: 0.7em;
+  width: 1em;
+  height: 1em;
+  cursor: pointer;
+  opacity: 0.2;
+  transition: 0.15s ease-in-out;
+}
+.close:hover {
+  opacity: 0.8;
+}
+.close::before, .close::after {
+  content: '';
+  position: absolute;
+  top: calc(50% - 1px);
+  left: -10%;
+  width: 120%;
+  height: 2px;
+  background: currentColor;
+}
+.close::before {
+  transform: rotate(45deg);
+}
+.close::after {
+  transform: rotate(-45deg);
+}
+
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 1em;
+}
+.headerStatus {
+  flex: none;
+  margin-right: 0.4em;
+  font-size: 0.8em;
+}
+.headerName {
+  word-break: break-word;
+  hyphens: auto;
+  min-width: 0;
+}
+
+.selectors {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.selectors > li {
+  display: flex;
+  align-items: center;
+}
+.selectors > li:not(:first-child) {
+  margin-top: 0.5em;
+}
+.selectorStatus {
+  flex: none;
+  margin-right: 0.25em;
+}
+.selectorName {
+  word-break: break-word;
+  hyphens: auto;
+  min-width: 0;
+}
+
+@media (max-width: 600px) {
+  .root {
+    font-size: 14px;
+  }
+  .header {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 400px) {
+  .root {
+    font-size: 13px;
+  }
+  .card {
+    padding: 1em;
+  }
+  .close {
+    top: 0.2em;
+    right: 0.2em;
+  }
+  .header {
+    font-size: 14px;
+  }
+}

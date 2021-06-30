@@ -1,0 +1,37 @@
+.list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+
+  /*
+   * Makes the block take the height from the parent (not from the children).
+   * The grid can break on resize without this property.
+   */
+  min-height: 0;
+}
+.list > * {
+  flex: 1;
+}
+
+.slide {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  display: grid;
+  grid-gap: 0 16px;
+  text-align: left;
+}
+.slide > li {
+  white-space: nowrap;
+  overflow: hidden;
+  min-width: 0;
+}
+.slide > li:not(.blocked) {
+  color: #8e8e93;
+}
+
+.noSelectors {
+  font-size: 18px;
+}

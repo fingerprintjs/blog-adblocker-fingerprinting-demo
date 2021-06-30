@@ -3,6 +3,7 @@ import BulkSelectorBlockChecker from '../../helpers/bulk_selector_block_checker'
 import allSelectors from '../../data/many_unique_selectors'
 import Layout from '../layout/layout'
 import Toggle from '../toggle/toggle'
+import SelectorList from './selector_list'
 import * as styles from './selectors_demo.css'
 
 type SelectorsList = Record<string, string[]>
@@ -13,24 +14,13 @@ export default React.memo(function SelectorsDemo() {
   const [doShowAll, setShowAll] = React.useState(false)
   const [selectorStatuses, progress] = useSelectorsBlockage(allSelectors)
 
-  const selectorsView: React.ReactNode[] = []
-  selectorStatuses.forEach((isBlocked, selector) => {
-    if (isBlocked || doShowAll) {
-      selectorsView.push(
-        <li key={selector} title={selector} className={isBlocked ? styles.blocked : undefined}>
-          {isBlocked ? '⛔️' : '🆗'} {selector}
-        </li>,
-      )
-    }
-  })
-
   return (
     <Layout
       header={
         <>
           <div className={styles.control} onClick={() => setShowAll(!doShowAll)}>
             <Toggle checked={doShowAll} />
-            <div className={styles.controlLabel}>Show not blocked</div>
+            <div className={styles.controlLabel}>{doShowAll ? 'Showing all' : 'Showing only blocked'}</div>
           </div>
           <progress
             max={100}
@@ -40,11 +30,7 @@ export default React.memo(function SelectorsDemo() {
         </>
       }
     >
-      {progress >= 1 && selectorsView.length === 0 ? (
-        <div className={styles.noSelectors}>Your browser blocks no known selectors</div>
-      ) : (
-        <ul className={styles.selectors}>{selectorsView}</ul>
-      )}
+      <SelectorList progress={progress} selectorStatuses={selectorStatuses} showOnlyBlocked={!doShowAll} />
     </Layout>
   )
 })

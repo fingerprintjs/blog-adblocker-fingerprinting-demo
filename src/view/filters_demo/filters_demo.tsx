@@ -3,69 +3,44 @@ import * as murmurHash3 from '../../helpers/murmurhash3'
 import getBlockedSelectors from '../../helpers/get_blocked_selectors'
 import filters from '../../data/some_unique_selectors'
 import Layout from '../layout/layout'
+import FilterList from './filter_list'
+import FilterModal from './filter_modal'
 import * as styles from './filters_demo.css'
 
 type Filters = Record<string, string[]>
 
+type SelectorBlockageByFilter = Record<string, [isEnabled: boolean, selectors: Map<string, boolean>]>
+
 export default React.memo(function FiltersDemo() {
   const [selectorBlockageByFilter, fingerprint] = useBlockedSelectors(filters)
-
-  return (
-    <Layout
-      header={
-        <div>
-          Fingerprint: <span className={styles.fingerprint}>{fingerprint}</span>
-        </div>
-      }
-    >
-      <ul className={styles.filters}>
-        {Object.entries(selectorBlockageByFilter).map(([filterName, [isEnabled, selectors]]) => (
-          <li key={filterName}>
-            <Filter name={filterName} isEnabled={isEnabled} selectors={selectors} />
-          </li>
-        ))}
-      </ul>
-    </Layout>
-  )
-})
-
-interface FilterProps {
-  name: string
-  isEnabled: boolean
-  selectors: Map<string, boolean>
-}
-
-const Filter = React.memo(function Filter({ name, isEnabled, selectors }: FilterProps) {
-  const [isExpanded, setExpanded] = React.useState(false)
+  const [filterModalState, selectFilter, closeFilterModal] = useFilterModalState(selectorBlockageByFilter)
 
   return (
     <>
-      <div
-        title={name}
-        className={`${styles.filterHeader} ${isExpanded ? styles.expanded : ''}`}
-        onClick={() => setExpanded(!isExpanded)}
+      <Layout
+        header={
+          <div>
+            Fingerprint: <span className={styles.fingerprint}>{fingerprint}</span>
+          </div>
+        }
       >
-        <span className={styles.filterHeaderStatus}>{isEnabled ? '✅' : '❌'}</span>
-        <span className={styles.filterHeaderName}>{name}</span>
-        <span className={styles.filterHeaderIcon} />
-      </div>
-      <ul className={`${styles.filterSelectors} ${isExpanded ? styles.expanded : ''}`}>
-        {[...selectors].map(([selector, isBlocked]) => (
-          <li key={selector} title={selector}>
-            {isBlocked ? '⛔️' : '🆗'} {selector}
-          </li>
-        ))}
-      </ul>
+        <FilterList filters={selectorBlockageByFilter} onFilterSelect={selectFilter} />
+      </Layout>
+      <FilterModal {...filterModalState} onClose={closeFilterModal} />
     </>
   )
 })
 
+/**
+ * Detects blocked selectors of filters and calculates a fingerprint
+ */
 function useBlockedSelectors(filters: Filters) {
   return React.useMemo(() => {
     const allSelectors = ([] as string[]).concat(...Object.values(filters))
     const blockedSelectors = getBlockedSelectors(allSelectors)
 
-    const selectorBlockageByFilter: Record<string, [isEnabled: boolean, selectors: Map<string, boolean>]> = {}
+    const selectorBlockageByFilter: SelectorBlockageByFilter = {}
+    const enabledFilters: string[] = []
 
     for (const [filterName, selectorNames] of Object.entries(filters)) {
       const selectors = new Map<string, boolean>()
@@ -79,11 +54,45 @@ function useBlockedSelectors(filters: Filters) {
         }
       }
 
-      selectorBlockageByFilter[filterName] = [blockedSelectorsCount >= selectorNames.length * 0.5, selectors]
+      const isFilterEnabled = blockedSelectorsCount >= selectorNames.length * 0.5
+      selectorBlockageByFilter[filterName] = [isFilterEnabled, selectors]
+      if (isFilterEnabled) {
+        enabledFilters.push(filterName)
+      }
     }
 
-    const fingerprint = murmurHash3.x86.hash128(JSON.stringify([...blockedSelectors]))
+    const fingerprint = murmurHash3.x86.hash128(JSON.stringify(enabledFilters))
 
     return [selectorBlockageByFilter, fingerprint] as const
   }, [filters])
+}
+
+function useFilterModalState(filters: SelectorBlockageByFilter) {
+  const filtersRef = React.useRef(filters)
+
+  const [modalState, setModalState] = React.useState(() => ({
+    open: false,
+    filterEnabled: false,
+    filterName: '',
+    selectors: new Map<string, boolean>(),
+  }))
+
+  React.useEffect(() => {
+    filtersRef.current = filters
+  }, [filters])
+
+  const selectFilter = React.useCallback((filterName: string) => {
+    if (filtersRef.current[filterName]) {
+      setModalState({
+        open: true,
+        filterEnabled: filtersRef.current[filterName][0],
+        filterName,
+        selectors: filtersRef.current[filterName][1],
+      })
+    }
+  }, [])
+
+  const close = React.useCallback(() => setModalState((state) => ({ ...state, open: false })), [])
+
+  return [modalState, selectFilter, close] as const
 }

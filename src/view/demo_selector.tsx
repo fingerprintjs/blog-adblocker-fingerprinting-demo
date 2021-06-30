@@ -6,8 +6,18 @@ const enum Demo {
   Filters,
 }
 
-const SelectorsDemo = React.lazy(() => import('./selectors_demo/selectors_demo'))
-const FiltersDemo = React.lazy(() => import('./filters_demo/filters_demo'))
+const SelectorsDemo = React.lazy(async () => {
+  const module = await import('./selectors_demo/selectors_demo')
+  // Wait for the CSS to load. Otherwise the content size detector can detect incorrect
+  await new Promise((resolve) => setTimeout(resolve, 500))
+  return module
+})
+const FiltersDemo = React.lazy(async () => {
+  const module = await import('./filters_demo/filters_demo')
+  // Wait for the CSS to load. Otherwise the content size detector can detect incorrect
+  await new Promise((resolve) => setTimeout(resolve, 500))
+  return module
+})
 
 /**
  * Selects the demo manually or automatically based on the page URL
