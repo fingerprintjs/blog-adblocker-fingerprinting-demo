@@ -1,6 +1,6 @@
 import { selectorToElement } from './dom'
 
-export default function getBlockedSelectors<T extends string>(selectors: readonly T[]): Set<T> {
+export default async function getBlockedSelectors<T extends string>(selectors: readonly T[]): Promise<Set<T>> {
   const d = document
   const root = d.createElement('div')
   const elements = new Array<HTMLElement>(selectors.length)
@@ -19,6 +19,9 @@ export default function getBlockedSelectors<T extends string>(selectors: readonl
   d.body.appendChild(root)
 
   try {
+    // Then wait for the ad blocker to hide the element
+    await new Promise((resolve) => setTimeout(resolve, 100))
+
     // Then check which of the elements are blocked
     for (let i = 0; i < selectors.length; ++i) {
       if (!elements[i].offsetParent) {

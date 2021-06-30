@@ -5,11 +5,8 @@ import getBlockedSelectors from './get_blocked_selectors'
  * Splits all the selectors into batches and checks the batches with pauses in between.
  */
 export default class BulkSelectorBlockChecker<T extends string> {
-  /** Index of the selector to continue checking */
-  private selectorsIndex = 0
-
-  /** Timeout id of the current batch check pause */
-  private checkTimeoutId = 0
+  /** Whether the process of checking is stopped */
+  private isStopped = false
 
   /**
    * @param selectors All the selectors to check. Don't change it by reference.
@@ -21,7 +18,7 @@ export default class BulkSelectorBlockChecker<T extends string> {
     private batchSize: number,
     private onBatch: (selectorResults: Map<T, boolean>, totalCheckedSelectorsCount: number) => unknown,
   ) {
-    this.scheduleBatchChecking()
+    this.runCheck()
   }
 
   /**
@@ -29,30 +26,30 @@ export default class BulkSelectorBlockChecker<T extends string> {
    * Call this method when you don't need the object to release the memory.
    */
   public stop(): void {
-    clearTimeout(this.checkTimeoutId)
+    this.isStopped = true
   }
 
-  private checkBatch() {
-    const selectors = this.selectors.slice(this.selectorsIndex, this.selectorsIndex + this.batchSize)
-    const blockedSelectors = getBlockedSelectors(selectors)
+  private async runCheck() {
+    for (let selectorsIndex = 0; selectorsIndex < this.selectors.length; ) {
+      // A timeout allows browser to update the page and run other tasks, thus makes the page responsive
+      await new Promise((resolve) => setTimeout(resolve, 0))
+      if (this.isStopped) {
+        return
+      }
 
-    const selectorResults = new Map<T, boolean>()
-    for (const selector of selectors) {
-      selectorResults.set(selector, blockedSelectors.has(selector))
+      const selectors = this.selectors.slice(selectorsIndex, selectorsIndex + this.batchSize)
+      const blockedSelectors = await getBlockedSelectors(selectors)
+      if (this.isStopped) {
+        return
+      }
+
+      const selectorResults = new Map<T, boolean>()
+      for (const selector of selectors) {
+        selectorResults.set(selector, blockedSelectors.has(selector))
+      }
+
+      selectorsIndex += selectors.length
+      this.onBatch(selectorResults, selectorsIndex)
     }
-
-    this.selectorsIndex += selectors.length
-    this.onBatch(selectorResults, this.selectorsIndex)
-
-    if (this.selectorsIndex < this.selectors.length) {
-      this.scheduleBatchChecking()
-    }
-  }
-
-  private scheduleBatchChecking() {
-    clearTimeout(this.checkTimeoutId)
-
-    // A timeout allows browser to update the page and run other tasks, thus makes the page responsive
-    this.checkTimeoutId = window.setTimeout(this.checkBatch.bind(this), 0)
   }
 }

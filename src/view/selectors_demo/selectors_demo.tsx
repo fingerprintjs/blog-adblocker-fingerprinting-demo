@@ -54,7 +54,7 @@ function useSelectorsBlockage(allSelectors: SelectorsList): SelectorsBlockage {
       200,
       (batchSelectorResults, totalCheckedSelectorsCount) => {
         setSelectorsBlockage(([selectorStatuses]) => {
-          batchSelectorResults.forEach((isBlocked, selector) => selectorStatuses.set(selector, isBlocked))
+          mergeMap(selectorStatuses, batchSelectorResults)
           const progress = selectorsArray.length ? totalCheckedSelectorsCount / selectorsArray.length : 1
           return [selectorStatuses, progress]
         })
@@ -64,4 +64,8 @@ function useSelectorsBlockage(allSelectors: SelectorsList): SelectorsBlockage {
   }, [allSelectors])
 
   return selectorsBlockage
+}
+
+function mergeMap<TKey, TValue>(destination: Map<TKey, TValue>, source: Map<TKey, TValue>) {
+  source.forEach((value, key) => destination.set(key, value))
 }
