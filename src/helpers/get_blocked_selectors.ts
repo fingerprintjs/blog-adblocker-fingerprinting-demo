@@ -20,7 +20,7 @@ export default async function getBlockedSelectors<T extends string>(selectors: r
 
   try {
     // Then wait for the ad blocker to hide the element
-    await new Promise((resolve) => setTimeout(resolve, 100))
+    await new Promise((resolve) => setTimeout(resolve, 200))
 
     // Then check which of the elements are blocked
     for (let i = 0; i < selectors.length; ++i) {
