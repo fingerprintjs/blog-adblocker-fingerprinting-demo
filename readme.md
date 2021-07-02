@@ -1,4 +1,4 @@
-# Ad blocker fingerprint article interactive demos
+# [Ad blocker fingerprint article](https://fingerprintjs.com/blog/ad-blocker-fingerprinting/) interactive demos
 
 ## Usage
 
