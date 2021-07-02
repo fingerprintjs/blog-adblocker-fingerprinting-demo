@@ -1,13 +1,22 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import DemoSelector from './view/demo_selector'
-import './view/global.css'
-import './view/loading_screen/loading_screen.css' // Required for the HTML code
+import SelectorsDemo from './view/selectors_demo/selectors_demo'
+import FiltersDemo from './view/filters_demo/filters_demo'
 
-// todo: Add an error boundary
-ReactDOM.render(
-  <React.StrictMode>
-    <DemoSelector />
-  </React.StrictMode>,
-  document.querySelector('#app'),
-)
+function makeDemoRunner(View: React.ComponentType) {
+  return function (container: HTMLElement) {
+    // todo: Add an error boundary
+    ReactDOM.render(
+      <React.StrictMode>
+        <View />
+      </React.StrictMode>,
+      container,
+    )
+  }
+}
+
+// Webpack's "library" option doesn't work in development mode for some reason
+window.fpjsAdblockerArticleDemos = {
+  runSelectorsDemo: makeDemoRunner(SelectorsDemo),
+  runFiltersDemo: makeDemoRunner(FiltersDemo),
+}

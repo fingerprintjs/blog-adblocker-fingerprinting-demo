@@ -32,6 +32,36 @@ yarn build
 
 The result HTML code will appear in the `dist` directory.
 
+### Website integration
+
+Blocked Selectors demo:
+
+```html
+<div
+    id="selectorsDemo"
+    style="width: calc(100% + 40px); height: 75vh; min-height: 360px; margin-left: -20px; margin-right: -20px;"
+></div>
+<script
+    async
+    src="https://fingerprintjs.github.io/adblocker-fingerprint-article-demos/main.js"
+    onload="fpjsAdblockerArticleDemos.runSelectorsDemo(document.querySelector('#selectorsDemo'))"
+></script>
+```
+
+Enabled Filters demo:
+
+```html
+<div
+    id="filtersDemo"
+    style="width: calc(100% + 40px); height: 75vh; min-height: 360px; margin-left: -20px; margin-right: -20px;"
+></div>
+<script
+    async
+    src="https://fingerprintjs.github.io/adblocker-fingerprint-article-demos/main.js"
+    onload="fpjsAdblockerArticleDemos.runFiltersDemo(document.querySelector('#filtersDemo'))"
+></script>
+```
+
 ## Development
 
 See [contributing.md](contributing.md)

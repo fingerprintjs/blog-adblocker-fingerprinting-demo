@@ -5,4 +5,5 @@ declare module '*.css' {
 
 interface Window {
   webkitOfflineAudioContext?: OfflineAudioContext
+  fpjsAdblockerArticleDemos?: unknown
 }

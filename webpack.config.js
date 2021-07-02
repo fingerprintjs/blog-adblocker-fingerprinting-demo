@@ -2,9 +2,8 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const autoprefixer = require('autoprefixer')
+const cssnano = require('cssnano')
 
 module.exports = (env, { mode = 'development' }) => ({
   entry: './src/index.tsx',
@@ -28,10 +27,10 @@ module.exports = (env, { mode = 'development' }) => ({
         oneOf: [
           {
             test: /node_modules/,
-            use: makeCSSLoaders(false),
+            use: makeCSSLoaders(false, mode === 'development'),
           },
           {
-            use: makeCSSLoaders(true),
+            use: makeCSSLoaders(true, mode === 'development'),
           },
         ],
       },
@@ -48,7 +47,6 @@ module.exports = (env, { mode = 'development' }) => ({
           },
         },
       }),
-      new CssMinimizerPlugin(),
     ],
   },
   devtool: mode === 'development' ? 'inline-source-map' : 'source-map',
@@ -64,37 +62,33 @@ module.exports = (env, { mode = 'development' }) => ({
     new HtmlWebpackPlugin({
       template: './src/index.html',
     }),
-    new MiniCssExtractPlugin({
-      filename: '[name].css?[contenthash]',
-    }),
   ],
 })
 
-function makeCSSLoaders(isModule) {
+function makeCSSLoaders(isModule, isDevelopmentMode) {
   return [
-    {
-      loader: MiniCssExtractPlugin.loader,
-      options: { modules: { namedExport: true } },
-    },
+    'style-loader',
     {
       loader: 'css-loader',
       options: {
         importLoaders: 1,
         modules: isModule
           ? {
-              localIdentName: '[name]__[local]__[hash:base64:5]',
+              localIdentName: isDevelopmentMode ? '[name]__[local]__[hash:base64:5]' : '[hash:base64:10]',
               namedExport: true,
               exportLocalsConvention: 'dashesOnly',
             }
           : false,
+        sourceMap: false,
       },
     },
     {
       loader: 'postcss-loader',
       options: {
         postcssOptions: {
-          plugins: [autoprefixer()],
+          plugins: [...(isDevelopmentMode ? [] : [cssnano()]), autoprefixer()],
         },
+        sourceMap: false,
       },
     },
   ]
